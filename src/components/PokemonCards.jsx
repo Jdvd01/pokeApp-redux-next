@@ -1,22 +1,31 @@
-import { Badge, Box, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Divider, Heading, HStack, Image, List, ListIcon, ListItem, Stack, Text, VStack } from "@chakra-ui/react"
+// Chakra imports
+import { Badge, Box, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Divider, Heading, HStack, Image, Link, List, ListIcon, ListItem } from "@chakra-ui/react"
+import InfoIcon from '@chakra-ui/icons'
+
+// Redux imports
 import { useSelector, useDispatch } from "react-redux"
 import { getPokemons } from "@/redux/reducers/pokemonSlice"
+
 import { useEffect } from "react"
-import InfoIcon from '@chakra-ui/icons'
+import NextLink from "next/link"
 
 const PokemonCards = () => {
     const { pokeList, isLoading, isError, message } = useSelector((state) => state.pokemon)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(getPokemons())
+
+        // if pokeList its empty, fetch pokemons
+        if(pokeList.length == 0) dispatch(getPokemons())
+        
     }, [])
+
 
     if (isLoading) {
         return <p>Loading...</p>
     }
     if (!pokeList) {
-        return <p>No hay pokemons</p>
+        return <p>Pokemons not found</p>
     }
     if (isError) {
         return <p>{message}</p>
@@ -86,7 +95,9 @@ const PokemonCards = () => {
                                             }
                                         >
                                             <ListIcon as={InfoIcon} color='green.500' />
-                                            Learn more
+                                            <Link as={NextLink} href={`/pokemon/${pokemon.id}`}>
+                                                Learn more
+                                            </Link>
                                         </Button>
 
                                         <Button
