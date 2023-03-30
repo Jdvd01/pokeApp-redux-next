@@ -99,6 +99,14 @@ a {
   color: inherit;
   text-decoration: none;
 }
+.footer-anchor{
+  color: #370080;
+}
+.footer-anchor:hover{
+  color: #8A2BE2;
+}
+
+
 
 @media (prefers-color-scheme: dark) {
   html {
