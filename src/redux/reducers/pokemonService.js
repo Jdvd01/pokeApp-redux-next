@@ -14,8 +14,14 @@ const getPokemons = async () => {
     return pokeList
 }
 
+const getSinglePokemon = async (id) => {
+    const response = await axios.get(`${BASE_URL}/pokemon/${id}`)
+    return response.data
+}
+
 const pokemonService = {
-    getPokemons
+    getPokemons,
+    getSinglePokemon
 }
 
 export default pokemonService

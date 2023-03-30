@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import pokemonService from "./pokemonService"
 
 const initialState = {
-    pokeList:  [],
+    pokeList: [],
+    singlePokemon: {},
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -14,6 +15,24 @@ export const getPokemons = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             return await pokemonService.getPokemons()
+        } catch (error) {
+            const message = (
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+            ) ||
+                error.message ||
+                error.toString()
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const getSinglePokemon = createAsyncThunk(
+    'pokemon/getSinglePokemon',
+    async (id, thunkAPI) => {
+        try {
+            return await pokemonService.getSinglePokemon(id)
         } catch (error) {
             const message = (
                 error.response &&
@@ -45,6 +64,21 @@ export const pokemonSlice = createSlice({
                 state.pokeList = action.payload
             })
             .addCase(getPokemons.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+                state.pokeList = null
+            })
+
+            .addCase(getSinglePokemon.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(getSinglePokemon.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.singlePokemon = action.payload
+            })
+            .addCase(getSinglePokemon.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
